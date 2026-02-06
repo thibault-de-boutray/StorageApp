@@ -56,7 +56,7 @@
 
   /* DASHBOARD CONTAINER */
   .container-secondary {
-    @apply text-black font-bold w-[31.5%] h-25 bg-white rounded-md p-4 py-6 flex items-center;
+    @apply text-black font-bold w-[100%] md:w-[31.5%] h-[100px] bg-white rounded-4xl md:rounded-md p-4 py-6 flex items-center;
   }
 
   /* DASHBOARD LAYOUT */
@@ -65,7 +65,8 @@
   }
 
   .dashboard-left {
-    @apply bg-gray-900 w-[55%] h-150 rounded-md border border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.35)];
+    @apply bg-gray-900 w-[55%] h-[600px] rounded-md border border-white/10;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   }
 
   .dashboard-right {
@@ -73,11 +74,13 @@
   }
 
   .dashboard-right-top {
-    @apply bg-gray-900 w-full h-80 rounded-md border border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.35)];
+    @apply bg-gray-900 w-full h-80 rounded-md border border-white/10;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   }
 
   .dashboard-right-bottom {
-    @apply bg-gray-900 w-full h-150 rounded-md border border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.35)];
+    @apply bg-gray-900 w-full h-[600px] rounded-md border border-white/10;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   }
 }
 
