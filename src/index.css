@@ -58,6 +58,27 @@
   .container-secondary {
     @apply text-black font-bold w-[31.5%] h-25 bg-white rounded-md p-4 py-6 flex items-center;
   }
+
+  /* DASHBOARD LAYOUT */
+  .dashboard-main {
+    @apply flex justify-between;
+  }
+
+  .dashboard-left {
+    @apply bg-gray-900 w-[55%] h-150 rounded-md border border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.35)];
+  }
+
+  .dashboard-right {
+    @apply w-[40%] flex flex-col space-y-5;
+  }
+
+  .dashboard-right-top {
+    @apply bg-gray-900 w-full h-80 rounded-md border border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.35)];
+  }
+
+  .dashboard-right-bottom {
+    @apply bg-gray-900 w-full h-150 rounded-md border border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.35)];
+  }
 }
 
 /* PROGRESS BAR */
