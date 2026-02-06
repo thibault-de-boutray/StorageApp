@@ -1,18 +1,81 @@
-# React + Vite
+# StorageApp
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+StorageApp is a React project designed for data storage. It provides a foundational structure for developing web applications that require data management capabilities, built with modern front-end technologies.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+To get a local copy up and running, follow these steps:
 
-## React Compiler
+1.  **Clone the repository:**
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+    ```bash
+    git clone https://github.com/thibault-de-boutray/StorageApp.git
+    ```
 
-Note: This will impact Vite dev & build performances.
+2.  **Navigate into the project directory:**
 
-## Expanding the ESLint configuration
+    ```bash
+    cd StorageApp
+    ```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+3.  **Install dependencies:**
+
+    ```bash
+    npm install
+    ```
+
+## Usage
+
+After installation, you can run the application in development mode or build it for production.
+
+### Development Server
+
+To start the development server:
+
+```bash
+npm run dev
+```
+
+This will typically open the application in your browser at `http://localhost:5173` (or another port if 5173 is in use).
+
+### Building for Production
+
+To build the application for production:
+
+```bash
+npm run build
+```
+
+This command compiles the project into the `dist` directory, optimizing it for deployment.
+
+### Previewing the Production Build
+
+To preview the production build locally:
+
+```bash
+npm run preview
+```
+
+This will serve the compiled application from the `dist` directory.
+
+## Tech Stack
+
+*   **Languages:** JavaScript
+*   **Frameworks:** React, Vite
+*   **Styling:** Tailwind CSS
+*   **Tools:** ESLint
+*   **Package Manager:** npm
+
+## Contributing
+
+Contributions are welcome! If you have suggestions for improving this project, please open an issue or submit a pull request.
+
+## License
+
+This project is not currently licensed.
+
+## Badges
+
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![npm](https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white)
+![License: Unspecified](https://img.shields.io/badge/License-Unspecified-lightgrey.svg)
