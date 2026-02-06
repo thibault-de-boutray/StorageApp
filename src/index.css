@@ -56,21 +56,26 @@
 
   /* DASHBOARD CONTAINER */
   .container-secondary {
-    @apply text-black font-bold w-[28%] h-25 bg-white rounded-md p-4 py-6 flex items-center;
+    @apply text-black font-bold w-[31.5%] h-25 bg-white rounded-md p-4 py-6 flex items-center;
   }
 }
 
 /* PROGRESS BAR */
 .progress-bar {
-  width: 220px;
+  width: 100%;
+  max-width: 220px;
   height: 10px;
   border-radius: 999px;
   overflow: hidden;
+  appearance: none;
+  -webkit-appearance: none;
+  display: block;
 }
 
 .progress-bar::-webkit-progress-bar {
   background-color: #e5e7eb;
   border-radius: 999px;
+  overflow: hidden;
 }
 
 .progress-bar::-webkit-progress-value {

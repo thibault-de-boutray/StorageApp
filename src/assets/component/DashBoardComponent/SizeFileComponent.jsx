@@ -8,8 +8,8 @@ export const SizeFileComponent = ({ maxSize, size }) => {
     }
     return (
         <div className="container-secondary pl-0">
-            <img src="/images/cloud.png" alt="image stockage" width={90} />
-            <div className="flex flex-col gap-2.5">
+            <img src="/images/cloud.png" alt="cloud storage icon" width={90} />
+            <div className="flex flex-col gap-2.5 overflow-hidden">
                 <p className="text-2xl"> {formatSize(size)} / {formatSize(maxSize)}</p>
                 <progress className="progress-bar" max={maxSize} value={size} />
             </div>
