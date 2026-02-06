@@ -113,7 +113,7 @@ export const DashboardPage = () => {
             sharedBy: user?.identifiant || "unknown",
             updatedAt: new Date().toISOString(),
         }
-        setSharedFiles(prev => [sharedFile, ...prev])
+        setSharedFiles(prev => [sharedFile, ...prev].slice(0, 10))
     }
 
     return (
