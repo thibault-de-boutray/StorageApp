@@ -45,16 +45,61 @@ const testSharedFiles = [
     { name: "Stakeholder_Review.pdf", sharedBy: "mike_q", updatedAt: "2026-01-27T15:00:00Z" },
 ]
 
+const storageUsageSourceFiles = [
+    ...testRecentFiles,
+    ...testSharedFiles,
+]
+
+const buildStorageUsage = (files) => {
+    const categories = {
+        Documents: ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "md", "csv"],
+        Photos: ["jpg", "jpeg", "png", "svg", "gif", "webp"],
+        Videos: ["mp4", "mov", "avi", "mkv", "webm"],
+    }
+
+    const counts = {
+        Documents: 0,
+        Photos: 0,
+        Videos: 0,
+        Other: 0,
+    }
+
+    const getCategory = (filename) => {
+        const ext = filename.split(".").at(-1)?.toLowerCase()
+        if (!ext) return "Other"
+        if (categories.Documents.includes(ext)) return "Documents"
+        if (categories.Photos.includes(ext)) return "Photos"
+        if (categories.Videos.includes(ext)) return "Videos"
+        return "Other"
+    }
+
+    files.forEach((file) => {
+        const category = getCategory(file.name)
+        counts[category] += 1
+    })
+
+    const total = Object.values(counts).reduce((sum, val) => sum + val, 0) || 1
+
+    return [
+        { name: "Documents", value: Math.round((counts.Documents / total) * 100) },
+        { name: "Photos", value: Math.round((counts.Photos / total) * 100) },
+        { name: "Videos", value: Math.round((counts.Videos / total) * 100) },
+        { name: "Other", value: Math.round((counts.Other / total) * 100) },
+    ]
+}
+
 export const DashboardPage = () => {
     const { user } = useUserContext()
 
     const [recentFiles, setRecentFiles] = useState([])
     const [sharedFiles, setSharedFiles] = useState([])
+    const [storageUsage, setStorageUsage] = useState([])
 
     // (test)
     useEffect(() => {
         setRecentFiles(testRecentFiles)
         setSharedFiles(testSharedFiles)
+        setStorageUsage(buildStorageUsage(storageUsageSourceFiles))
     }, [])
 
 
@@ -82,6 +127,7 @@ export const DashboardPage = () => {
             <DashBoardMainContainer
                 recentFiles={recentFiles}
                 sharedFiles={sharedFiles}
+                storageUsage={storageUsage}
                 addSharedFile={addSharedFile}
                 addRecentFile={addRecentFile}
             />
