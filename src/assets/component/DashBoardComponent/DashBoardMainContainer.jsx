@@ -1,6 +1,7 @@
 import { RecentFileContainer } from "./RecentFileDashBoard/RecentFileContainer"
+import { ShareFileContainer } from "./SharedFileDashBoard/ShareFileContainer"
 
-export const DashBoardMainContainer = ({ recentFiles }) => {
+export const DashBoardMainContainer = ({ recentFiles, sharedFiles, addSharedFile }) => {
     return (
         <div className="dashboard-main">
             <RecentFileContainer files={recentFiles} />
@@ -8,9 +9,7 @@ export const DashBoardMainContainer = ({ recentFiles }) => {
                 <div className="dashboard-right-top" name="content-right-top">
 
                 </div>
-                <div className="dashboard-right-bottom" name="content-right-bottom">
-
-                </div>
+                <ShareFileContainer files={sharedFiles} onUpload={addSharedFile} />
             </div>
         </div>
     )
