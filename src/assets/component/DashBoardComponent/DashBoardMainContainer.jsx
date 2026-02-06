@@ -1,10 +1,9 @@
+import { RecentFileContainer } from "./RecentFileDashBoard/RecentFileContainer"
 
-export const DashBoardMainContainer = () => {
+export const DashBoardMainContainer = ({ recentFiles }) => {
     return (
         <div className="dashboard-main">
-            <div className="dashboard-left" name="content-gauche">
-
-            </div>
+            <RecentFileContainer files={recentFiles} />
             <div name="content-droite" className="dashboard-right">
                 <div className="dashboard-right-top" name="content-right-top">
 
@@ -16,4 +15,3 @@ export const DashBoardMainContainer = () => {
         </div>
     )
 }
-

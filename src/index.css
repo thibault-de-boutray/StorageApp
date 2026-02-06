@@ -61,16 +61,17 @@
 
   /* DASHBOARD LAYOUT */
   .dashboard-main {
-    @apply flex justify-between;
+    @apply flex flex-col gap-8 md:flex-row justify-between items-start md:items-stretch;
   }
 
   .dashboard-left {
-    @apply bg-gray-900 w-[55%] h-[600px] rounded-md border border-white/10;
+    @apply bg-gray-900 w-[100%] h-auto md:w-[55%] rounded-md border border-white/10;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   }
 
+
   .dashboard-right {
-    @apply w-[40%] flex flex-col space-y-5;
+    @apply w-[100%] md:w-[40%] flex flex-col space-y-8;
   }
 
   .dashboard-right-top {
