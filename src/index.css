@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+
+
+@layer base {
+  body {
+    @apply bg-slate-950 text-white min-h-screen;
+  }
+
+  h1 {
+    @apply text-2xl sm:text-3xl font-semibold tracking-tight text-white;
+  }
+}
+
+@layer components {
+
+  /* TITLES */
+  .title-primary {
+    @apply font-semibold tracking-tight leading-[1.2] pb-1 bg-gradient-to-r from-emerald-300 via-cyan-300 to-sky-400 bg-clip-text text-transparent;
+  }
+
+  /* IMAGES */
+  .image-rounder {
+    @apply object-cover rounded-full;
+  }
+
+  /* LINKS */
+  .nav-link {
+    @apply text-slate-200 text-xl hover:text-white transition-colors inline-flex items-center gap-2 px-2 py-1 rounded-lg;
+    @apply active:text-emerald-200 active:border active:border-white/25 active:bg-white/5 active:drop-shadow-[0_0_10px_rgba(255,255,255,0.25)];
+  }
+
+  .active-link {
+    @apply text-emerald-200 border border-white/25 bg-white/5 drop-shadow-[0_0_10px_rgba(255,255,255,0.25)];
+  }
+
+  /* INPUT */
+  .input {
+    @apply w-full rounded-xl border border-white/20 bg-white/80 backdrop-blur-md px-4 py-3 text-slate-900 shadow-md placeholder:text-slate-400 outline-none transition-all duration-300 focus:border-emerald-400/60 focus:ring-4 focus:ring-emerald-400/20;
+  }
+
+  /* BUTTON BASE */
+  .button {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm sm:text-base font-semibold transition-all duration-300 ease-out cursor-pointer select-none focus:outline-none focus:ring-4 focus:ring-emerald-400/30 active:scale-95;
+  }
+
+  /* BUTTON PRIMARY */
+  .button-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm sm:text-base font-semibold transition-all duration-300 ease-out cursor-pointer select-none focus:outline-none focus:ring-4 focus:ring-emerald-400/30 active:scale-95
+      bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-400/40 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* BUTTON SECONDARY */
+  .button-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm sm:text-base font-semibold transition-all duration-300 ease-out cursor-pointer select-none focus:outline-none focus:ring-4 focus:ring-emerald-400/30 active:scale-95
+      border border-white/20 bg-slate-900/60 backdrop-blur-md text-slate-100 shadow-md hover:bg-slate-900/80 hover:border-white/40 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+}
