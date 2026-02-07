@@ -1,4 +1,3 @@
-import { div } from "framer-motion/client"
 import { FaMagnifyingGlass } from "react-icons/fa6"
 export const FileSearchBarComponent = () => {
     return (
