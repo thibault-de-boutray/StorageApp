@@ -1,12 +1,13 @@
 export const FilesFolderRow = ({ label, number }) => {
     const imageName = label?.toLowerCase().replace(/\s+/g, "-")
-    const handleDesktopClick = (event) => {
-        if (window.innerWidth >= 768) {
-            event.preventDefault()
+    const handleClick = () => {
+        const container = document.getElementById("file-explorer")
+        if (container) {
+            container.scrollTo({ top: 0, behavior: "smooth" })
         }
     }
     return (
-        <a href="#file-explorer" onClick={handleDesktopClick} className="file-row md:cursor-default">
+        <a href="#file-explorer" onClick={handleClick} className="file-row">
             <div className="flex items-center gap-3">
                 <img
                     src={`/images/${imageName}.png`}

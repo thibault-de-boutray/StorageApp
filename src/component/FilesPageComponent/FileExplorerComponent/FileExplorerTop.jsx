@@ -3,7 +3,7 @@ import { FileSearchBarComponent } from "./FileSearchBarComponent"
 
 export const FileExplorerTop = ({ name, setFilter }) => {
     return (
-        <div className="flex items-center gap-8 border-b-1 border-white/20 py-5 px-6">
+        <div className="sticky top-0 z-30 flex items-center gap-8 border-b border-white/20 bg-gray-900/95 py-5 px-6 backdrop-blur">
             <p className="truncate w-30 hidden md:block text-xl text-white/80">{name}</p>
             <div className="flex flex-1 items-center gap-4">
                 <FileSearchBarComponent setFilter={setFilter} />

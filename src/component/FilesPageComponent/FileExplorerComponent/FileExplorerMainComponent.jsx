@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { FaAngleDown, FaAngleUp } from "react-icons/fa6"
+import { useEffect, useState } from "react"
+import { FaAngleDown, FaAngleUp, FaFolder } from "react-icons/fa6"
 import { FileIcon } from "react-file-icon"
 import { FileSortSelect } from "./FileSortSelect"
 import { getFileExtension, getFileIconStyle, getFileTypeLabel, getLastModif } from "../../../utils/fileUtils"
@@ -45,10 +45,16 @@ export const FileExplorerMainComponent = ({ filteredFolder = [], filter = "" }) 
         if (sortBy === "type") return getFileTypeLabel(file.name)
         return getLastModif(file.lastModif)
     }
+    useEffect(() => {
+        const container = document.getElementById("file-explorer")
+        if (container) {
+            container.scrollTo({ top: 0, behavior: "smooth" })
+        }
+    }, [filter, sortBy, sortDir])
 
     return (
         <div>
-            <div className="flex items-center justify-end gap-4 p-4">
+            <div className="sticky top-[72px] z-20 flex items-center justify-end gap-4 border-b border-white/10 bg-gray-900/95 p-4 backdrop-blur">
 
                 <div className="flex items-center gap-2">
                     <FileSortSelect value={sortBy} onChange={setSortBy} />
@@ -90,7 +96,13 @@ export const FileExplorerMainComponent = ({ filteredFolder = [], filter = "" }) 
                             <td className="px-2 py-2 md:px-4 md:py-3">
                                 <div className="flex items-center gap-3">
                                     <div className="h-7 w-7 shrink-0">
-                                        <FileIcon extension={getFileExtension(file.name)} {...getFileIconStyle(file.name)} />
+                                        {file?.type === "folder" || file?.isFolder ? (
+                                            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-white/5 text-blue-200">
+                                                <FaFolder />
+                                            </div>
+                                        ) : (
+                                            <FileIcon extension={getFileExtension(file.name)} {...getFileIconStyle(file.name)} />
+                                        )}
                                     </div>
                                     <span className="truncate text-xs md:text-sm">{file.name}</span>
                                 </div>
@@ -98,21 +110,21 @@ export const FileExplorerMainComponent = ({ filteredFolder = [], filter = "" }) 
                             <td className="px-2 py-2 text-left text-white/70 md:hidden">
                                 {sortBy === "type" ? (
                                     <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-white/75">
-                                        {GetSelectedValue(file)}
+                                        {file?.type === "folder" || file?.isFolder ? "FOLDER" : GetSelectedValue(file)}
                                     </span>
                                 ) : (
                                     <span className="truncate text-xs">{GetSelectedValue(file)}</span>
                                 )}
                             </td>
                             <td className="px-4 py-3 text-left text-white/70 hidden md:table-cell">
-                                <span className="truncate">{file.size || "--"}</span>
+                                <span className="truncate">{file?.type === "folder" || file?.isFolder ? "--" : (file.size || "--")}</span>
                             </td>
                             <td className="px-4 py-3 text-white/70 hidden md:table-cell">
                                 <span className="truncate">{getLastModif(file.lastModif)}</span>
                             </td>
                             <td className="px-4 py-3 hidden md:table-cell">
                                 <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-white/75">
-                                    {getFileTypeLabel(file.name)}
+                                    {file?.type === "folder" || file?.isFolder ? "FOLDER" : getFileTypeLabel(file.name)}
                                 </span>
                             </td>
                             <td className="px-2 py-2 flex items-center justify-center md:px-4 md:py-3">
