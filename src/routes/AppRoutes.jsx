@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react"
 import { Routes, Route, Navigate } from "react-router-dom"
 import { ProtectedRoute } from "./ProtectedRoute"
+import { FilesPage } from "../pages/FilesPage"
 
 const LoginPage = lazy(() => import("../pages/LoginPage").then((m) => ({ default: m.LoginPage })))
 const RegisterPage = lazy(() => import("../pages/RegisterPage").then((m) => ({ default: m.RegisterPage })))
@@ -17,6 +18,7 @@ export const AppRoutes = () => {
                 <Route element={<ProtectedRoute />}>
                     <Route element={<MainLayout />}>
                         <Route path="/dashboard" element={<DashboardPage />} />
+                        <Route path="/Files" element={<FilesPage />} />
                     </Route>
                 </Route>
                 <Route path="*" element={<Navigate to="/login" replace />} />

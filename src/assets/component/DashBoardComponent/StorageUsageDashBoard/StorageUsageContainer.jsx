@@ -5,10 +5,10 @@ const COLORS = ["#4F8BFF", "#F6B25B", "#5CD6A1", "#8B7CF6"]
 
 export const StorageUsageContainer = ({ data }) => {
     return (
-        <div className="dashboard-right-top" name="content-storage-usage">
+        <div className="dashboard-right-top color-primary-container" name="content-storage-usage">
             <div className="flex items-center justify-between px-8 pt-6">
                 <h1 className="font-bold text-2xl">Storage Usage</h1>
-                <Link to="/files" className="text-blue-400/80 hover:text-blue-300 text-sm">
+                <Link to="/Files" className="text-blue-400/80 hover:text-blue-300 text-sm">
                     View all
                 </Link>
             </div>

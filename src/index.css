@@ -59,13 +59,35 @@
     @apply text-black font-bold w-[100%] md:w-[31.5%] h-[100px] bg-white rounded-4xl md:rounded-md p-4 py-6 flex items-center;
   }
 
+  /* CONTAINER COLOR */
+  .color-primary-container {
+    @apply bg-gray-900;
+  }
+
+  /* FILES CONTAINER */
+  .file-container {
+    @apply border border-white/10 rounded-md;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  /* FILES ROW */
+  .file-row {
+    @apply flex items-center justify-between p-2 cursor-pointer border-l-2 border-transparent transition-all duration-200;
+    @apply hover:text-blue-600 hover:bg-blue-400/30 hover:border-blue-600 hover:rounded-r-[6px];
+    @apply active:text-white active:scale-[0.98] active:bg-blue-500/30 active:underline;
+  }
+
+  .file-storage-section {
+    @apply border-t border-b border-white/10 pt-4 pb-4;
+  }
+
   /* DASHBOARD LAYOUT */
   .dashboard-main {
     @apply flex flex-col gap-8 md:flex-row justify-between items-start md:items-stretch;
   }
 
   .dashboard-left {
-    @apply bg-gray-900 w-[100%] h-auto md:w-[55%] rounded-md border border-white/10 max-h-[200vh] overflow-hidden;
+    @apply w-[100%] h-auto md:w-[55%] rounded-md border border-white/10 max-h-[200vh] overflow-hidden;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   }
 
@@ -75,12 +97,12 @@
   }
 
   .dashboard-right-top {
-    @apply bg-gray-900 w-full rounded-md border border-white/10;
+    @apply w-full rounded-md border border-white/10;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   }
 
   .dashboard-right-bottom {
-    @apply bg-gray-900 w-full rounded-md border border-white/10;
+    @apply w-full rounded-md border border-white/10;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   }
 }

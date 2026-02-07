@@ -17,7 +17,7 @@ export const ShareFileContainer = ({ files, onUpload }) => {
     }
 
     return (
-        <div className="dashboard-right-bottom" name="content-shared-files">
+        <div className="dashboard-right-bottom color-primary-container" name="content-shared-files">
             <div className="flex items-center justify-between px-8 pt-6">
                 <h1 className="font-bold text-2xl">
                     Shared Files

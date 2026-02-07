@@ -61,7 +61,7 @@ export const Header = () => {
 
             <ul className="hidden md:flex items-center gap-10">
                 <li><NavLink to="/DashBoard" className={navLinkClass}>DashBoard</NavLink></li>
-                <li><NavLink to="/DashBoard" className={navLinkClass}>Files</NavLink></li>
+                <li><NavLink to="/Files" className={navLinkClass}>Files</NavLink></li>
                 <li className="relative">
                     <NavLink
                         onClick={HandleSubMenu}
