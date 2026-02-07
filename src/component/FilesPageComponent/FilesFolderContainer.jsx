@@ -13,10 +13,10 @@ export const FilesFolderContainer = ({ numbers, size, maxSize }) => {
         });
     };
     return (
-        <div className="color-primary-container file-container px-3 w-[20%]">
-            <div className="flex items-center">
-                <img src="/images/folderOpen.png" width={60} alt="all files icon" />
-                <h1 className="text-2xl">
+        <div className="color-primary-container file-container px-3 md:w-[20%]">
+            <div className="flex items-center gap-3 pl-2.5 my-3">
+                <img src="/images/all-files.png" width={29} alt="all files icon" />
+                <h1 className="text-1.5xl">
                     All Files
                 </h1>
             </div>
