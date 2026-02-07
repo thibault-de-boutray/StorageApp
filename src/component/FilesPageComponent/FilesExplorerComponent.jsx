@@ -8,7 +8,7 @@ export const FilesExplorerComponent = ({ folder }) => {
         element.name.toLowerCase().includes(filter.toLowerCase())
     )
     return (
-        <div className="color-primary-container w-full">
+        <div className="color-primary-container file-container w-full">
             <FileExplorerTop name={folder.name} setFilter={setFilter} />
             <FileExplorerMainComponent filteredFolder={filteredFolder} />
 

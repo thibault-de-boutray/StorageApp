@@ -33,9 +33,9 @@ export const FileExplorerMainComponent = ({ filteredFolder = [] }) => {
                     <tr className="border-b border-white/10">
                         <th scope="col" className="px-4 py-3">Name</th>
                         <th scope="col" className="px-4 py-3">Size</th>
-                        <th scope="col" className="px-4 py-3">Type</th>
-                        <th scope="col" className="px-4 py-3">Modified</th>
-                        <th scope="col" className="px-4 py-3 text-right">Actions</th>
+                        <th scope="col" className="px-4 py-3 hidden md:table-cell">Modified</th>
+                        <th scope="col" className="px-4 py-3 hidden md:table-cell">Type</th>
+                        <th scope="col" className="px-4 py-3 text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,16 +49,23 @@ export const FileExplorerMainComponent = ({ filteredFolder = [] }) => {
                                     <span className="truncate">{file.name}</span>
                                 </div>
                             </td>
-                            <td className="px-4 py-3 text-white/70">{file.size || "--"}</td>
-                            <td className="px-4 py-3">
+                            <td className="px-4 py-3 text-left text-white/70">{file.size || "--"}</td>
+                            <td className="px-4 py-3 text-white/70 hidden md:table-cell">
+                                {getLastModif(file.lastModif)}
+                            </td>
+                            <td className="px-4 py-3 hidden md:table-cell">
                                 <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-white/75">
                                     {getFileTypeLabel(file.name)}
                                 </span>
                             </td>
-                            <td className="px-4 py-3 text-white/70">
-                                {getLastModif(file.lastModif)}
+                            <td className="px-4 py-3 flex items-center justify-center">
+                                <button
+                                    type="button"
+                                    className="inline-flex h-10 w-10 cursor-pointer items-center justify-center text-2xl font-semibold leading-none text-white/80 transition hover:text-white active:scale-90 active:drop-shadow-[0_0_10px_rgba(59,130,246,0.6)]"
+                                >
+                                    ...
+                                </button>
                             </td>
-                            <td className="px-4 py-3 text-right text-white/60">...</td>
                         </tr>
                     ))}
                 </tbody>
