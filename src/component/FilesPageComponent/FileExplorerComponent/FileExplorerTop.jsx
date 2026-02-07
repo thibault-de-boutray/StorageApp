@@ -2,8 +2,8 @@ import { FileSearchBarComponent } from "./FileSearchBarComponent"
 
 export const FileExplorerTop = ({ name }) => {
     return (
-        <div className="flex items-center gap-6">
-            <p className="truncate w-30 hidden md:block text-white/80">{name}</p>
+        <div className="flex items-center gap-8">
+            <p className="truncate w-30 hidden md:block text-xl text-white/80">{name}</p>
             <div className="flex flex-1 items-center gap-4">
                 <FileSearchBarComponent />
                 <button
