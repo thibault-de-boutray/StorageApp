@@ -29,6 +29,15 @@ export const FileExplorerMainComponent = ({ filteredFolder = [], filter = "" }) 
         return new Date(file.lastModif || 0).getTime()
     }
     const SortFilesInFolder = [...FilterFilesInFolder].sort((a, b) => {
+        if (sortBy === "type") {
+            const aIsFolder = a?.type === "folder" || a?.isFolder
+            const bIsFolder = b?.type === "folder" || b?.isFolder
+            if (aIsFolder !== bIsFolder) {
+                return sortDir === "asc"
+                    ? (aIsFolder ? -1 : 1)
+                    : (aIsFolder ? 1 : -1)
+            }
+        }
         const aVal = GetSortValue(a)
         const bVal = GetSortValue(b)
         if (aVal < bVal) return sortDir === "asc" ? -1 : 1

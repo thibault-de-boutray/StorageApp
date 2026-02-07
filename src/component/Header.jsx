@@ -37,7 +37,7 @@ export const Header = () => {
         return () => document.removeEventListener("pointerdown", handlePointerDown)
     }, [isMobileMenuOpen])
     return (
-        <nav className="relative flex bg-slate-950/80 backdrop-blur-md justify-between px-6 md:px-15 border-b border-white/10 max-w-screen">
+        <nav className="relative z-50 flex bg-slate-950/80 backdrop-blur-md justify-between px-6 md:px-15 border-b border-white/10 max-w-screen">
             <NavLink to="/DashBoard" className="flex gap-4 md:gap-10 items-center">
                 <img src="/images/logo.png" className="image-rounder" alt="logo site" width={64} />
                 <div className="hidden md:flex flex-col items-center">
@@ -78,7 +78,7 @@ export const Header = () => {
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: -6, scale: 0.98 }}
                                 transition={{ duration: 0.35, ease: "easeOut" }}
-                                className="sub-menu absolute text-white -right-10 top-full mt-3 min-w-[200px] bg-gray-700 border border-white/10 rounded-2xl z-10 p-2 shadow-xl shadow-black/30 backdrop-blur-md"
+                                className="sub-menu absolute text-white -right-10 top-full mt-3 min-w-[200px] bg-gray-700 border border-white/10 rounded-2xl z-50 p-2 shadow-xl shadow-black/30 backdrop-blur-md"
                             >
                                 <li><NavLink to="/DashBoard" className={`${navLinkClass()} block px-3 py-2 rounded-xl hover:bg-white/5`}>Profile</NavLink></li>
                                 <li><NavLink to="/Files" className={`${navLinkClass()} block px-3 py-2 rounded-xl hover:bg-white/5`}>Setting</NavLink></li>
