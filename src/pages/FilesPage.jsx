@@ -8,7 +8,7 @@ export const FilesPage = () => {
     const size = 2.1
     const maxSize = 193.2
     const folderTest = {
-        name: "test file"
+        name: "test filDSFSDFDSFSDFDSe"
     }
 
     return (
