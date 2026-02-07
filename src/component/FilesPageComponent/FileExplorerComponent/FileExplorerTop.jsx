@@ -1,3 +1,4 @@
+import { FaFolderPlus, FaUpload } from "react-icons/fa6"
 import { FileSearchBarComponent } from "./FileSearchBarComponent"
 
 export const FileExplorerTop = ({ name, setFilter }) => {
@@ -8,14 +9,20 @@ export const FileExplorerTop = ({ name, setFilter }) => {
                 <FileSearchBarComponent setFilter={setFilter} />
                 <button
                     type="button"
-                    className="inline-flex items-center gap-2 md:ml-5 rounded-lg border border-blue-300/40 bg-gradient-to-b from-blue-400 to-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(30,64,175,0.35)] transition hover:from-blue-300 hover:to-blue-500 active:translate-y-[1px]"
+                    className="ml-6 inline-flex h-11 w-12 items-center justify-center gap-2 rounded-lg border border-blue-300/40 bg-gradient-to-b from-blue-400 to-blue-600 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(30,64,175,0.35)] transition hover:from-blue-300 hover:to-blue-500 active:translate-y-[1px] md:ml-12 md:h-auto md:w-auto md:px-4 md:py-2"
                 >
-                    <span className="text-base hidden md:block leading-none">+</span>
-                    Upload Files
+                    <FaUpload className="text-base md:text-base" />
+                    <span className="hidden md:inline">Upload Files</span>
+                </button>
+                <button
+                    type="button"
+                    className="inline-flex h-11 w-12 items-center justify-center gap-2 rounded-lg border border-blue-300/40 bg-gradient-to-b from-blue-400 to-blue-600 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(30,64,175,0.35)] transition hover:from-blue-300 hover:to-blue-500 active:translate-y-[1px] md:h-auto md:w-auto md:px-4 md:py-2"
+                >
+                    <FaFolderPlus className="text-base md:text-base" />
+                    <span className="hidden md:inline">New Folder</span>
                 </button>
 
             </div>
         </div>
     )
 }
-
