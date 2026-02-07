@@ -1,4 +1,4 @@
-import { FilesFolderContainer } from "../assets/component/FilesPageComponent/FilesFolderContainer"
+import { FilesFolderContainer } from "../component/FilesPageComponent/FilesFolderContainer"
 
 
 

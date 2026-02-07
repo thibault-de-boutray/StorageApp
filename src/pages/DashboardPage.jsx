@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 
-import { DashBoardTopContainer } from "../assets/component/DashBoardComponent/DashBoadTopContainer"
-import { DashBoardMainContainer } from "../assets/component/DashBoardComponent/DashBoardMainContainer"
+import { DashBoardTopContainer } from "../component/DashBoardComponent/DashBoadTopContainer"
+import { DashBoardMainContainer } from "../component/DashBoardComponent/DashBoardMainContainer"
 import { useUserContext } from "../Context/UserContext"
 
 const testRecentFiles = [

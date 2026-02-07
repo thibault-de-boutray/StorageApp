@@ -3,17 +3,18 @@ import { Input } from "./Input"
 import { Button } from "./Button"
 import { ErrorMessage } from "./ErrorMessage"
 import { Eye, EyeOff } from "lucide-react"
-import { useAuth } from "../../hooks/useAuth"
+import { useAuth } from "../hooks/useAuth"
 
-export const LoginForm = () => {
+export const RegisterForm = () => {
     const [identifiant, setIdentifiant] = useState("")
+    const [email, setEmail] = useState("")
     const [passWord, setPassWord] = useState("")
     const [showPassword, setShowPassword] = useState(false)
-    const { loading, error, submitLogin } = useAuth()
+    const { loading, error, submitRegister } = useAuth()
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        submitLogin({ identifiant, passWord })
+        submitRegister({ identifiant, email, passWord })
     }
 
     return (
@@ -22,13 +23,21 @@ export const LoginForm = () => {
             onSubmit={handleSubmit}
         >
             <h1 className="mx-auto text-center text-3xl font-semibold tracking-tight text-white">
-                Se connecter
+                Inscription
             </h1>
             <Input
                 placeholder="Identifiant"
                 value={identifiant}
                 type="text"
                 onChange={(e) => setIdentifiant(e.target.value)}
+                className="input"
+                required
+            />
+            <Input
+                placeholder="Email"
+                value={email}
+                type="email"
+                onChange={(e) => setEmail(e.target.value)}
                 className="input"
                 required
             />
@@ -56,7 +65,7 @@ export const LoginForm = () => {
                 type="submit"
                 disabled={loading}
             >
-                {loading ? "Chargement..." : "se connecter"}
+                {loading ? "Chargement..." : "s'inscrire"}
             </Button>
             <ErrorMessage message={error} />
         </form>

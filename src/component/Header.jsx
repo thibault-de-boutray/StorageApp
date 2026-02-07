@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { useUserContext } from "../../Context/UserContext"
+import { useUserContext } from "../Context/UserContext"
 import { NavLink } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
 import { FaAngleDown, FaAngleUp, FaAlignJustify, FaTimes } from "react-icons/fa"

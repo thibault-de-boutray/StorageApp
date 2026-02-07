@@ -1,4 +1,4 @@
-import { LoginForm } from "../assets/component/LoginForm"
+import { LoginForm } from "../component/LoginForm"
 import { AuthLayout } from "../layouts/AuthLayout"
 
 

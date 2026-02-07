@@ -1,4 +1,4 @@
-import { RegisterForm } from "../assets/component/RegisterForm"
+import { RegisterForm } from "../component/RegisterForm"
 import { AuthLayout } from "../layouts/AuthLayout"
 
 export const RegisterPage = () => {
