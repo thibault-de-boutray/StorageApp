@@ -1,8 +1,9 @@
 import { useState } from "react"
 import { FaMagnifyingGlass } from "react-icons/fa6"
-export const FileSearchBarComponent = () => {
+export const FileSearchBarComponent = ({ setFilter }) => {
     const [research, setResearch] = useState("")
     const handleChange = (e) => {
+        setFilter(e.target.value)
         setResearch(e.target.value)
     }
     return (
