@@ -10,7 +10,11 @@ export const useUserContext = () => {
 }
 
 export const ContextUserProvider = ({ children }) => {
-    const [user, setUser] = useState({ identifiant: "" })
+    const [user, setUser] = useState({
+        identifiant: "",
+        email: "user@example.com",
+        language: "Francais",
+    })
 
     return (
         <UserContext.Provider value={{ user, setUser }}>

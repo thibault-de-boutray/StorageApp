@@ -80,7 +80,7 @@ export const Header = () => {
                                 transition={{ duration: 0.35, ease: "easeOut" }}
                                 className="sub-menu absolute text-white -right-10 top-full mt-3 min-w-[200px] bg-gray-700 border border-white/10 rounded-2xl z-50 p-2 shadow-xl shadow-black/30 backdrop-blur-md"
                             >
-                                <li><NavLink to="/DashBoard" className={`${navLinkClass()} block px-3 py-2 rounded-xl hover:bg-white/5`}>Profile</NavLink></li>
+                                <li><NavLink to="/Profile" className={`${navLinkClass()} block px-3 py-2 rounded-xl hover:bg-white/5`}>Profile</NavLink></li>
                                 <li><NavLink to="/Files" className={`${navLinkClass()} block px-3 py-2 rounded-xl hover:bg-white/5`}>Setting</NavLink></li>
                                 <li><NavLink to="/login" className={`${navLinkClass()} block px-3 py-2 rounded-xl hover:bg-white/5`}>Se deconnecter</NavLink></li>
                             </motion.ul>
@@ -126,7 +126,7 @@ export const Header = () => {
                                 </div>
                             </li>
                             <li>
-                                <NavLink to="/DashBoard" onClick={closeMobileMenu} className={`${navLinkClass()} block px-4 py-3 rounded-xl hover:bg-white/5`}>
+                                <NavLink to="/Profile" onClick={closeMobileMenu} className={`${navLinkClass()} block px-4 py-3 rounded-xl hover:bg-white/5`}>
                                     Profile
                                 </NavLink>
                             </li>
