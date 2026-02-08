@@ -3,6 +3,7 @@ import { FaAngleDown, FaAngleUp, FaFolder } from "react-icons/fa6"
 import { FileIcon } from "react-file-icon"
 import { FileSortSelect } from "./FileSortSelect"
 import { getFileExtension, getFileIconStyle, getFileTypeLabel, getLastModif } from "../../../utils/fileUtils"
+import { FilePathContainer } from "./FilePathContainer"
 
 export const FileExplorerMainComponent = ({ filteredFolder = [], filter = "" }) => {
     const [sortBy, setSortBy] = useState("lastModif")
@@ -63,19 +64,23 @@ export const FileExplorerMainComponent = ({ filteredFolder = [], filter = "" }) 
 
     return (
         <div>
-            <div className="sticky top-[72px] z-20 flex items-center justify-end gap-4 border-b border-white/10 bg-gray-900/95 p-4 backdrop-blur">
+            <div className="sticky top-[72px] z-20 flex items-center justify-end gap-4 border-b border-white/10 bg-gray-900/95 p-4 pt-5 md:p-3 md:pt-4 backdrop-blur">
 
-                <div className="flex items-center gap-2">
-                    <FileSortSelect value={sortBy} onChange={setSortBy} />
-
-                    <button
-                        type="button"
-                        onClick={() => setSortDir(sortDir === "asc" ? "desc" : "asc")}
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-blue-300/30 bg-[#0f1a3b] text-white shadow-[0_6px_16px_rgba(15,23,42,0.35)] transition hover:border-blue-300/60"
-                        aria-label="Toggle sort direction"
-                    >
-                        {sortDir === "asc" ? <FaAngleUp /> : <FaAngleDown />}
-                    </button>
+                <div className="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between md:px-3 md:py-2">
+                    <div className="w-full md:w-auto mb-2 md:mb-0">
+                        <FilePathContainer />
+                    </div>
+                    <div className="flex w-full justify-end gap-2 md:w-auto">
+                        <FileSortSelect value={sortBy} onChange={setSortBy} />
+                        <button
+                            type="button"
+                            onClick={() => setSortDir(sortDir === "asc" ? "desc" : "asc")}
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-blue-300/30 bg-[#0f1a3b] text-white shadow-[0_6px_16px_rgba(15,23,42,0.35)] transition hover:border-blue-300/60"
+                            aria-label="Toggle sort direction"
+                        >
+                            {sortDir === "asc" ? <FaAngleUp /> : <FaAngleDown />}
+                        </button>
+                    </div>
                 </div>
             </div>
             <table className="w-full text-left text-sm text-white/85 table-fixed">
@@ -102,44 +107,44 @@ export const FileExplorerMainComponent = ({ filteredFolder = [], filter = "" }) 
                     ) : (
                         SortFilesInFolder.map((file, index) => (
                             <tr key={`${file.name}-${index}`} className="border-b border-white/10 hover:bg-white/5">
-                            <td className="px-2 py-2 md:px-4 md:py-3">
-                                <div className="flex items-center gap-3">
-                                    <div className="h-7 w-7 shrink-0">
-                                        {file?.type === "folder" || file?.isFolder ? (
-                                            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-white/5 text-blue-200">
-                                                <FaFolder />
-                                            </div>
-                                        ) : (
-                                            <FileIcon extension={getFileExtension(file.name)} {...getFileIconStyle(file.name)} />
-                                        )}
+                                <td className="px-2 py-2 md:px-4 md:py-3">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-7 w-7 shrink-0">
+                                            {file?.type === "folder" || file?.isFolder ? (
+                                                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-white/5 text-blue-200">
+                                                    <FaFolder />
+                                                </div>
+                                            ) : (
+                                                <FileIcon extension={getFileExtension(file.name)} {...getFileIconStyle(file.name)} />
+                                            )}
+                                        </div>
+                                        <span className="truncate text-xs md:text-sm">{file.name}</span>
                                     </div>
-                                    <span className="truncate text-xs md:text-sm">{file.name}</span>
-                                </div>
-                            </td>
-                            <td className="px-2 py-2 text-left text-white/70 md:hidden">
-                                {sortBy === "type" ? (
+                                </td>
+                                <td className="px-2 py-2 text-left text-white/70 md:hidden">
+                                    {sortBy === "type" ? (
+                                        <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-white/75">
+                                            {file?.type === "folder" || file?.isFolder ? "FOLDER" : GetSelectedValue(file)}
+                                        </span>
+                                    ) : (
+                                        <span className="truncate text-xs">{GetSelectedValue(file)}</span>
+                                    )}
+                                </td>
+                                <td className="px-4 py-3 text-left text-white/70 hidden md:table-cell">
+                                    <span className="truncate">{file?.type === "folder" || file?.isFolder ? "--" : (file.size || "--")}</span>
+                                </td>
+                                <td className="px-4 py-3 text-white/70 hidden md:table-cell">
+                                    <span className="truncate">{getLastModif(file.lastModif)}</span>
+                                </td>
+                                <td className="px-4 py-3 hidden md:table-cell">
                                     <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-white/75">
-                                        {file?.type === "folder" || file?.isFolder ? "FOLDER" : GetSelectedValue(file)}
+                                        {file?.type === "folder" || file?.isFolder ? "FOLDER" : getFileTypeLabel(file.name)}
                                     </span>
-                                ) : (
-                                    <span className="truncate text-xs">{GetSelectedValue(file)}</span>
-                                )}
-                            </td>
-                            <td className="px-4 py-3 text-left text-white/70 hidden md:table-cell">
-                                <span className="truncate">{file?.type === "folder" || file?.isFolder ? "--" : (file.size || "--")}</span>
-                            </td>
-                            <td className="px-4 py-3 text-white/70 hidden md:table-cell">
-                                <span className="truncate">{getLastModif(file.lastModif)}</span>
-                            </td>
-                            <td className="px-4 py-3 hidden md:table-cell">
-                                <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-white/75">
-                                    {file?.type === "folder" || file?.isFolder ? "FOLDER" : getFileTypeLabel(file.name)}
-                                </span>
-                            </td>
-                            <td className="px-2 py-2 flex items-center justify-center md:px-4 md:py-3">
-                                <button
-                                    type="button"
-                                    className="inline-flex h-10 w-10 cursor-pointer items-center justify-center text-2xl font-semibold leading-none text-white/80 transition hover:text-white active:scale-90 active:drop-shadow-[0_0_10px_rgba(59,130,246,0.6)]"
+                                </td>
+                                <td className="px-2 py-2 flex items-center justify-center md:px-4 md:py-3">
+                                    <button
+                                        type="button"
+                                        className="inline-flex h-10 w-10 cursor-pointer items-center justify-center text-2xl font-semibold leading-none text-white/80 transition hover:text-white active:scale-90 active:drop-shadow-[0_0_10px_rgba(59,130,246,0.6)]"
                                     >
                                         ...
                                     </button>
