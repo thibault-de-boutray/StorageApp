@@ -25,7 +25,7 @@ export const LoginForm = () => {
                 Se connecter
             </h1>
             <Input
-                placeholder="Identifiant"
+                placeholder="Identifiant ou email"
                 value={identifiant}
                 type="text"
                 onChange={(e) => setIdentifiant(e.target.value)}

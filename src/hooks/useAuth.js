@@ -1,32 +1,44 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { useUserContext } from "../Context/UserContext"
+import { useNavigate } from "react-router-dom";
+import { useUserContext } from "../Context/UserContext";
+import { useFetch } from "./useFetch";
 
 export const useAuth = () => {
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
-    const { user, setUser } = useUserContext()
-    const navigate = useNavigate()
+    const { setUser } = useUserContext();
+    const navigate = useNavigate();
+    const { loading, error, request, setError } = useFetch();
 
-    const submitLogin = ({ identifiant }) => {
-        setLoading(true)
-        setError("")
-        setTimeout(() => {
-            setUser({ ...user, identifiant })
-            setLoading(false)
-            navigate("/dashboard")
-        }, 900)
-    }
+    const submitLogin = async ({ identifiant, passWord }) => {
+        try {
+            const payload = await request({
+                method: "POST",
+                url: "/api/users/login",
+                data: {
+                    login: identifiant,
+                    passWord
+                }
+            });
 
-    const submitRegister = ({ identifiant, email }) => {
-        setLoading(true)
-        setError("")
-        setTimeout(() => {
-            setUser({ ...user, identifiant, email })
-            setLoading(false)
-            navigate("/dashboard")
-        }, 900)
-    }
+            setUser(payload.user);
+            navigate("/dashboard");
+        } catch {
+            // déjà gérer par le useFetch
+        }
+    };
 
-    return { loading, error, submitLogin, submitRegister }
-}
+    const submitRegister = async ({ identifiant, email, passWord }) => {
+        try {
+            const payload = await request({
+                method: "POST",
+                url: "/api/users/register",
+                data: { identifiant, email, passWord }
+            });
+
+            setUser(payload.user);
+            navigate("/dashboard");
+        } catch {
+            // déjà gérer par le useFetch
+        }
+    };
+
+    return { loading, error, setError, submitLogin, submitRegister };
+};
