@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { DashBoardTopContainer } from "../component/DashBoardComponent/DashBoadTopContainer"
 import { DashBoardMainContainer } from "../component/DashBoardComponent/DashBoardMainContainer"
 import { useUserContext } from "../Context/UserContext"
+import { useFetch } from "../hooks/useFetch"
 
 const testRecentFiles = [
     { name: "rapport.pdf", size: "2.1 MB", updatedAt: "2026-02-04T10:15:00Z" },
@@ -90,10 +91,16 @@ const buildStorageUsage = (files) => {
 
 export const DashboardPage = () => {
     const { user } = useUserContext()
+    const { request } = useFetch()
 
     const [recentFiles, setRecentFiles] = useState([])
     const [sharedFiles, setSharedFiles] = useState([])
     const [storageUsage, setStorageUsage] = useState([])
+    const [stockage, setStockage] = useState({
+        nombreFichiers: 0,
+        tailleUtilisee: 0,
+        tailleMax: Number(user?.stockage) || 0
+    })
 
     // (test)
     useEffect(() => {
@@ -102,6 +109,40 @@ export const DashboardPage = () => {
         setStorageUsage(buildStorageUsage(storageUsageSourceFiles))
     }, [])
 
+    useEffect(() => {
+        let isCancelled = false
+
+        const fetchStockage = async () => {
+            if (!user?.id) return
+
+            try {
+                const data = await request({
+                    method: "GET",
+                    url: `/api/users/${user.id}/stockage`
+                })
+                if (!isCancelled) {
+                    setStockage({
+                        nombreFichiers: Number(data?.nombreFichiers) || 0,
+                        tailleUtilisee: Number(data?.tailleUtilisee) || 0,
+                        tailleMax: Number(data?.tailleMax) || 0
+                    })
+                }
+            } catch {
+                if (!isCancelled) {
+                    setStockage((prev) => ({
+                        ...prev,
+                        tailleMax: Number(user?.stockage) || prev.tailleMax
+                    }))
+                }
+            }
+        }
+
+        fetchStockage()
+
+        return () => {
+            isCancelled = true
+        }
+    }, [user?.id, user?.stockage])
 
     const addRecentFile = (file) => {
         setRecentFiles(prev => [file, ...prev])
@@ -122,7 +163,7 @@ export const DashboardPage = () => {
                 Welcome {user.identifiant}
             </h1>
 
-            <DashBoardTopContainer />
+            <DashBoardTopContainer stockage={stockage} sharedCount={sharedFiles.length} />
 
             <DashBoardMainContainer
                 recentFiles={recentFiles}

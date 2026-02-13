@@ -13,6 +13,7 @@ export function useFetch(defaultConfig = {}) {
 
             try {
                 const response = await axios({
+                    withCredentials: true,
                     ...defaultConfig,
                     ...config
                 });

@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react"
 import { useUserContext } from "../Context/UserContext"
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
 import { FaAngleDown, FaAngleUp, FaAlignJustify, FaTimes } from "react-icons/fa"
+import axios from "axios"
 
 export const Header = () => {
-    const { user } = useUserContext()
+    const { user, setUser } = useUserContext()
+    const navigate = useNavigate()
     const [isSubMenuOpen, setSubMenuOpen] = useState()
     const [isMobileMenuOpen, setMobileMenuOpen] = useState(false)
     const mobileMenuRef = useRef(null)
@@ -22,6 +24,18 @@ export const Header = () => {
     const closeMobileMenu = () => {
         setMobileMenuOpen(false)
         setSubMenuOpen(false)
+    }
+
+    const handleLogout = async () => {
+        try {
+            await axios.post("/api/users/logout", {}, { withCredentials: true })
+        } catch {
+            // no-op: we still clear local state
+        } finally {
+            setUser(null)
+            closeMobileMenu()
+            navigate("/login")
+        }
     }
 
     useEffect(() => {
@@ -82,7 +96,7 @@ export const Header = () => {
                             >
                                 <li><NavLink to="/Profile" className={`${navLinkClass()} block px-3 py-2 rounded-xl hover:bg-white/5`}>Profile</NavLink></li>
                                 <li><NavLink to="/Files" className={`${navLinkClass()} block px-3 py-2 rounded-xl hover:bg-white/5`}>Setting</NavLink></li>
-                                <li><NavLink to="/login" className={`${navLinkClass()} block px-3 py-2 rounded-xl hover:bg-white/5`}>Se deconnecter</NavLink></li>
+                                <li><NavLink to="/login" onClick={handleLogout} className={`${navLinkClass()} block px-3 py-2 rounded-xl hover:bg-white/5`}>Se deconnecter</NavLink></li>
                             </motion.ul>
                         )}
                     </AnimatePresence>
@@ -136,7 +150,7 @@ export const Header = () => {
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/login" onClick={closeMobileMenu} className={`${navLinkClass()} block px-4 py-3 rounded-xl hover:bg-white/5`}>
+                                <NavLink to="/login" onClick={handleLogout} className={`${navLinkClass()} block px-4 py-3 rounded-xl hover:bg-white/5`}>
                                     Se deconnecter
                                 </NavLink>
                             </li>

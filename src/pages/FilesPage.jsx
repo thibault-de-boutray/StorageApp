@@ -1,12 +1,17 @@
+import { useEffect, useState } from "react"
 import { FilesExplorerComponent } from "../component/FilesPageComponent/FilesExplorerComponent"
 import { FilesFolderContainer } from "../component/FilesPageComponent/FilesFolderContainer"
+import { useUserContext } from "../Context/UserContext"
+import { useFetch } from "../hooks/useFetch"
 
 
 
 export const FilesPage = () => {
-    const numbers = [10, 20, 30, 10, 20, 15]
-    const size = 2.1
-    const maxSize = 193.2
+    const { user } = useUserContext()
+    const { request } = useFetch()
+    const [numbers, setNumbers] = useState([10, 20, 30, 10, 20, 15])
+    const [size, setSize] = useState(2.1)
+    const [maxSize, setMaxSize] = useState(193.2)
     const folderTest = {
         name: "test filDSFSDFDSFSDFDSe",
         listeChild: [
@@ -63,6 +68,39 @@ export const FilesPage = () => {
             { name: "logo-legacy.ai", size: "28Mo", lastModif: "2025-01-20 19:15" },
         ],
     }
+
+    useEffect(() => {
+        let isCancelled = false
+
+        const fetchStockage = async () => {
+            if (!user?.id) return
+            try {
+                const data = await request({
+                    method: "GET",
+                    url: `/api/users/${user.id}/stockage`
+                })
+                if (!isCancelled) {
+                    const fileCount = Number(data?.nombreFichiers) || 0
+                    const usedMb = (Number(data?.tailleUtilisee) || 0) / (1024 * 1024)
+                    const maxMb = (Number(data?.tailleMax) || 0) / (1024 * 1024)
+
+                    setNumbers((prev) => [fileCount, ...prev.slice(1)])
+                    setSize(usedMb)
+                    setMaxSize(maxMb)
+                }
+            } catch {
+                if (!isCancelled) {
+                    setNumbers((prev) => [0, ...prev.slice(1)])
+                }
+            }
+        }
+
+        fetchStockage()
+
+        return () => {
+            isCancelled = true
+        }
+    }, [user?.id])
 
     return (
         <div className=" mx-auto w-[90vw] mt-15">
