@@ -1,81 +1,76 @@
 # StorageApp
 
-StorageApp is a React project designed for data storage. It provides a foundational structure for developing web applications that require data management capabilities, built with modern front-end technologies.
+A React project designed for data storage.
 
 ## Installation
 
-To get a local copy up and running, follow these steps:
+To get this project up and running on your local machine, follow these steps:
 
-1.  **Clone the repository:**
-
+1.  **Clone the repository**:
     ```bash
     git clone https://github.com/thibault-de-boutray/StorageApp.git
     ```
-
-2.  **Navigate into the project directory:**
-
+2.  **Navigate to the project directory**:
     ```bash
     cd StorageApp
     ```
-
-3.  **Install dependencies:**
-
+3.  **Install dependencies**:
     ```bash
     npm install
     ```
 
 ## Usage
 
-After installation, you can run the application in development mode or build it for production.
+After installation, you can use the following scripts to manage the project:
 
-### Development Server
+*   **Start the development server**:
+    ```bash
+    npm run dev
+    ```
+    This command starts the Vite development server, making the application accessible in your browser, typically at `http://localhost:5173`.
 
-To start the development server:
+*   **Build for production**:
+    ```bash
+    npm run build
+    ```
+    This command compiles the application into static files for production deployment. The output will be located in the `dist` directory.
 
-```bash
-npm run dev
-```
+*   **Preview the production build**:
+    ```bash
+    npm run preview
+    ```
+    This command serves the production build locally, allowing you to test it before deployment.
 
-This will typically open the application in your browser at `http://localhost:5173` (or another port if 5173 is in use).
+*   **Run ESLint for code quality checks**:
+    ```bash
+    npm run lint
+    ```
+    This command executes ESLint across the codebase to identify and report on patterns found in JavaScript code.
 
-### Building for Production
-
-To build the application for production:
-
-```bash
-npm run build
-```
-
-This command compiles the project into the `dist` directory, optimizing it for deployment.
-
-### Previewing the Production Build
-
-To preview the production build locally:
-
-```bash
-npm run preview
-```
-
-This will serve the compiled application from the `dist` directory.
+*   **Execute image cropping script**:
+    ```bash
+    npm run crop:images
+    ```
+    This command runs a Node.js script located at `scripts/crop-images.mjs` for image processing.
 
 ## Tech Stack
 
-*   **Languages:** JavaScript
-*   **Frameworks:** React, Vite
-*   **Styling:** Tailwind CSS
-*   **Tools:** ESLint
-*   **Package Manager:** npm
+The project leverages the following technologies:
+
+*   **Languages**: JavaScript
+*   **Frameworks**: React, Vite, Tailwind CSS
+*   **Tools**: ESLint
 
 ## Contributing
 
-Contributions are welcome! If you have suggestions for improving this project, please open an issue or submit a pull request.
+Contributions are welcome. If you wish to contribute, please fork the repository and submit a pull request with your proposed changes.
 
 ## License
 
-This project is not currently licensed.
+The license for this project has not been specified.
 
 ## Badges
 
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![npm](https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white)
-![License: Unspecified](https://img.shields.io/badge/License-Unspecified-lightgrey.svg)
+[![Language: JavaScript](https://img.shields.io/badge/Language-JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Package Manager: npm](https://img.shields.io/badge/Package_Manager-npm-CB3837?logo=npm&logoColor=white)](https://www.npmjs.com/)
+[![License: Not Specified](https://img.shields.io/badge/License-Not_Specified-lightgrey)](https://choosealicense.com/no-permission/)
