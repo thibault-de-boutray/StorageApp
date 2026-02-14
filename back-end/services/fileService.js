@@ -4,6 +4,21 @@ import path from "node:path";
 import { cleanFolderName, defaultRootFolders, getUserRootDir } from "../utils/storagePaths.js";
 
 class FileService {
+    toNumber(value, fallback = 0) {
+        const parsed = Number(value);
+        return Number.isFinite(parsed) ? parsed : fallback;
+    }
+
+    nextFileId(files) {
+        if (!Array.isArray(files) || files.length === 0) return 1;
+        const lastId = Math.max(...files.map((file) => this.toNumber(file.id, 0)));
+        return lastId + 1;
+    }
+
+    nowIso() {
+        return new Date().toISOString();
+    }
+
     sanitizeFileName(fileName) {
         const cleanName = String(fileName || "")
             .trim()
@@ -34,23 +49,24 @@ class FileService {
     createFileRecord({ fileName, storedName, ownerId, parentId = null, sizeBytes, mimeType, storagePath, folderName }) {
         const state = this.readState();
         const files = state.files;
-        const lastFileId = files.length > 0 ? Math.max(...files.map((f) => Number(f.id) || 0)) : 0;
-        const now = new Date().toISOString();
+        const owner = this.toNumber(ownerId, 0);
+        const recordId = this.nextFileId(files);
+        const createdAt = this.nowIso();
 
         const record = {
-            id: lastFileId + 1,
+            id: recordId,
             itemType: "file",
             fileName: String(fileName || "file"),
             storedName: String(storedName || ""),
-            userId: Number(ownerId),
-            ownerId: Number(ownerId),
-            parentId: parentId === null ? null : Number(parentId),
-            sizeBytes: Number(sizeBytes) || 0,
+            userId: owner,
+            ownerId: owner,
+            parentId: parentId === null ? null : this.toNumber(parentId, null),
+            sizeBytes: this.toNumber(sizeBytes, 0),
             mimeType: String(mimeType || "application/octet-stream"),
             folderName: String(folderName || "anonymous"),
             storagePath: String(storagePath || ""),
-            createdAt: now,
-            updatedAt: now
+            createdAt,
+            updatedAt: createdAt
         };
 
         files.push(record);
@@ -61,13 +77,14 @@ class FileService {
     createFolderRecord({ folderName, ownerId, parentId = null, storagePath }) {
         const state = this.readState();
         const files = state.files;
-        const lastFileId = files.length > 0 ? Math.max(...files.map((f) => Number(f.id) || 0)) : 0;
-        const now = new Date().toISOString();
+        const owner = this.toNumber(ownerId, 0);
+        const recordId = this.nextFileId(files);
+        const createdAt = this.nowIso();
         const cleanName = cleanFolderName(folderName);
 
         const exists = files.some((item) => (
             item.itemType === "folder" &&
-            Number(item.ownerId) === Number(ownerId) &&
+            Number(item.ownerId) === owner &&
             Number(item.parentId) === Number(parentId) &&
             String(item.fileName).toLowerCase() === cleanName.toLowerCase()
         ));
@@ -77,19 +94,19 @@ class FileService {
         }
 
         const record = {
-            id: lastFileId + 1,
+            id: recordId,
             itemType: "folder",
             fileName: cleanName,
             storedName: cleanName,
-            userId: Number(ownerId),
-            ownerId: Number(ownerId),
-            parentId: parentId === null ? null : Number(parentId),
+            userId: owner,
+            ownerId: owner,
+            parentId: parentId === null ? null : this.toNumber(parentId, null),
             sizeBytes: 0,
             mimeType: "inode/directory",
             folderName: cleanName,
             storagePath: String(storagePath || ""),
-            createdAt: now,
-            updatedAt: now
+            createdAt,
+            updatedAt: createdAt
         };
 
         files.push(record);

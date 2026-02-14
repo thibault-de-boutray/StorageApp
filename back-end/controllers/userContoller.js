@@ -5,7 +5,7 @@ import path from "node:path";
 import FileService from "../services/fileService.js";
 import { cleanFolderName, getUserRootDir } from "../utils/storagePaths.js";
 
-const service = new UserService();
+const userService = new UserService();
 const fileService = new FileService();
 const SESSION_COOKIE_NAME = "session_token";
 
@@ -17,27 +17,46 @@ const sessionCookieOptions = {
     maxAge: 7 * 24 * 60 * 60 * 1000
 };
 
+const removePasswordField = (user) => {
+    const { passWord, ...safeUser } = user;
+    return safeUser;
+};
+
+const getRequestLanguage = (req) => req.headers["accept-language"]?.split(",")[0] || "fr-FR";
+
+const toOptionalNumber = (value) => {
+    if (value === undefined || value === null || value === "" || value === "null") {
+        return null;
+    }
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+};
+
+const toRequiredNumber = (value) => {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+};
+
 export const getUser = (req, res) => {
-    const users = service.findAll().map(({ passWord, ...safeUser }) => safeUser);
+    const users = userService.findAll().map(removePasswordField);
     res.json(users);
 };
 
 export const getUserById = (req, res) => {
     const { id } = req.params;
-    const user = service.findById(id);
+    const user = userService.findById(id);
 
     if (!user) {
         res.status(404).json({ message: "aucun utilisateur trouve" });
         return;
     }
 
-    const { passWord, ...safeUser } = user;
-    res.json(safeUser);
+    res.json(removePasswordField(user));
 };
 
 export const getStockage = (req, res) => {
     const { id } = req.params;
-    const stockage = service.getStockageById(id);
+    const stockage = userService.getStockageById(id);
 
     if (!stockage) {
         res.status(404).json({ message: "aucun utilisateur trouve" });
@@ -49,10 +68,9 @@ export const getStockage = (req, res) => {
 
 export const createUser = (req, res) => {
     const { name, langue } = req.body;
-    const browserLanguage = req.headers["accept-language"]?.split(",")[0];
-    const user = service.createUser({
+    const user = userService.createUser({
         name,
-        langue: langue || browserLanguage || "fr-FR"
+        langue: langue || getRequestLanguage(req)
     });
 
     if (!user) {
@@ -66,14 +84,14 @@ export const createUser = (req, res) => {
 
 export const loginUser = (req, res) => {
     const { login, passWord } = req.body;
-    const result = service.login({ login, passWord });
+    const result = userService.login({ login, passWord });
 
     if (result.error) {
         res.status(401).json({ message: result.error });
         return;
     }
 
-    const { passWord: _, ...safeUser } = result.user;
+    const safeUser = removePasswordField(result.user);
     fileService.ensureUserWorkspace(safeUser);
     const { token } = sessionService.createSession(safeUser.id);
     res.cookie(SESSION_COOKIE_NAME, token, sessionCookieOptions);
@@ -82,12 +100,11 @@ export const loginUser = (req, res) => {
 
 export const registerUser = (req, res) => {
     const { identifiant, email, passWord, langue } = req.body;
-    const browserLanguage = req.headers["accept-language"]?.split(",")[0];
-    const result = service.register({
+    const result = userService.register({
         identifiant,
         email,
         passWord,
-        langue: langue || browserLanguage || "fr-FR"
+        langue: langue || getRequestLanguage(req)
     });
 
     if (result.error) {
@@ -95,7 +112,7 @@ export const registerUser = (req, res) => {
         return;
     }
 
-    const { passWord: _, ...safeUser } = result.user;
+    const safeUser = removePasswordField(result.user);
     fileService.ensureUserWorkspace(safeUser);
     const { token } = sessionService.createSession(safeUser.id);
     res.cookie(SESSION_COOKIE_NAME, token, sessionCookieOptions);
@@ -111,7 +128,7 @@ export const meUser = (req, res) => {
         return;
     }
 
-    const user = service.findById(session.userId);
+    const user = userService.findById(session.userId);
 
     if (!user) {
         sessionService.deleteSession(token);
@@ -120,7 +137,7 @@ export const meUser = (req, res) => {
         return;
     }
 
-    const { passWord, ...safeUser } = user;
+    const safeUser = removePasswordField(user);
     fileService.ensureUserWorkspace(safeUser);
     res.json({ user: safeUser });
 };
@@ -133,27 +150,23 @@ export const logoutUser = (req, res) => {
 };
 
 export const uploadUserFiles = (req, res) => {
-    const files = Array.isArray(req.files) ? req.files : [];
-    const uploadFolder = req.uploadUserFolder || String(req.user?.id || "anonymous");
-    const rawParentId = req.body?.parentId;
-    const parentId = rawParentId === undefined || rawParentId === null || rawParentId === ""
-        ? null
-        : Number(rawParentId);
-    const safeParentId = Number.isFinite(parentId) ? parentId : null;
+    const uploadedFiles = Array.isArray(req.files) ? req.files : [];
+    const defaultFolderName = req.uploadUserFolder || String(req.user?.id || "anonymous");
+    const safeParentId = toOptionalNumber(req.body?.parentId);
     const parentFolder = safeParentId === null ? null : fileService.getFolderByIdForOwner(req.user.id, safeParentId);
 
-    if (files.length === 0) {
+    if (uploadedFiles.length === 0) {
         res.status(400).json({ message: "choisis au moins un fichier" });
         return;
     }
 
-    const totalSize = files.reduce((sum, file) => sum + (Number(file.size) || 0), 0);
-    service.addUploadedUsage(req.user.id, files.length, totalSize);
+    const totalUploadedSize = uploadedFiles.reduce((sum, file) => sum + (Number(file.size) || 0), 0);
+    userService.addUploadedUsage(req.user.id, uploadedFiles.length, totalUploadedSize);
     const userRootDir = getUserRootDir(req.user?.identifiant, req.user?.id);
     const targetDir = parentFolder?.storagePath || userRootDir;
     fs.mkdirSync(targetDir, { recursive: true });
 
-    const payload = files.map((file) => {
+    const filesPayload = uploadedFiles.map((file) => {
         const targetPath = path.join(targetDir, file.filename);
         if (path.resolve(file.path) !== path.resolve(targetPath)) {
             fs.renameSync(file.path, targetPath);
@@ -167,7 +180,7 @@ export const uploadUserFiles = (req, res) => {
             sizeBytes: file.size,
             mimeType: file.mimetype,
             storagePath: targetPath,
-            folderName: parentFolder?.fileName || uploadFolder
+            folderName: parentFolder?.fileName || defaultFolderName
         });
 
         return {
@@ -186,7 +199,7 @@ export const uploadUserFiles = (req, res) => {
 
     res.status(201).json({
         message: "upload ok",
-        files: payload
+        files: filesPayload
     });
 };
 
@@ -199,7 +212,7 @@ const bytesToLabel = (value) => {
 };
 
 const mapApiFile = (file, currentUserId) => {
-    const owner = service.findById(file.ownerId);
+    const owner = userService.findById(file.ownerId);
     const ownerName = owner?.identifiant || `user-${file.ownerId}`;
     const isOwner = Number(file.ownerId) === Number(currentUserId);
 
@@ -211,7 +224,7 @@ const mapApiFile = (file, currentUserId) => {
         storedName: file.storedName,
         ownerId: file.ownerId,
         ownerName,
-        sharedBy: isOwner ? ownerName : ownerName,
+        sharedBy: ownerName,
         isOwner,
         parentId: file.parentId,
         sizeBytes: file.sizeBytes,
@@ -225,14 +238,11 @@ const mapApiFile = (file, currentUserId) => {
 
 export const getMyFiles = (req, res) => {
     const hasParentFilter = Object.prototype.hasOwnProperty.call(req.query, "parentId");
-    const parentRaw = req.query?.parentId;
 
     if (hasParentFilter) {
-        const parentId = parentRaw === "null" || parentRaw === "" || parentRaw === undefined
-            ? null
-            : Number(parentRaw);
-
-        if (parentId !== null && !Number.isFinite(parentId)) {
+        const rawParentId = req.query?.parentId;
+        const parentId = toOptionalNumber(rawParentId);
+        if (rawParentId !== undefined && rawParentId !== "null" && rawParentId !== "" && parentId === null) {
             res.status(400).json({ message: "parentId invalide" });
             return;
         }
@@ -276,14 +286,14 @@ export const downloadMyFile = (req, res) => {
 export const shareMyFile = (req, res) => {
     const { fileId } = req.params;
     const userIds = Array.isArray(req.body?.userIds) ? req.body.userIds : [];
-    const normalizedIds = [...new Set(userIds.map((id) => Number(id)).filter((id) => Number.isFinite(id)))];
+    const normalizedIds = [...new Set(userIds.map((id) => toRequiredNumber(id)).filter((id) => id !== null))];
 
     if (normalizedIds.length === 0) {
         res.status(400).json({ message: "userIds est obligatoire" });
         return;
     }
 
-    const invalidUsers = normalizedIds.filter((id) => !service.findById(id));
+    const invalidUsers = normalizedIds.filter((id) => !userService.findById(id));
     if (invalidUsers.length > 0) {
         res.status(404).json({ message: "certains utilisateurs sont introuvables", invalidUsers });
         return;
@@ -360,7 +370,7 @@ export const deleteMyFile = (req, res) => {
     });
 
     const removedSize = removedFiles.reduce((sum, file) => sum + (Number(file.sizeBytes) || 0), 0);
-    service.removeUploadedUsage(req.user.id, removedFiles.length, removedSize);
+    userService.removeUploadedUsage(req.user.id, removedFiles.length, removedSize);
 
     res.json({
         message: "element supprime",
