@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-slate-950 text-white min-h-screen;
+  }
+
+  h1 {
+    @apply text-2xl sm:text-3xl font-semibold tracking-tight text-white;
+  }
+}
+
+@layer components {
+
+  /* TITLES */
+  .title-primary {
+    @apply font-semibold tracking-tight leading-[1.2] pb-1 bg-gradient-to-r from-emerald-300 via-cyan-300 to-sky-400 bg-clip-text text-transparent;
+  }
+
+  /* IMAGES */
+  .image-rounder {
+    @apply object-cover rounded-full;
+  }
+
+  /* LINKS */
+  .nav-link {
+    @apply text-slate-200 text-xl hover:text-white transition-colors inline-flex items-center gap-2 px-2 py-1 rounded-lg;
+    @apply active:text-emerald-200 active:border active:border-white/25 active:bg-white/5 active:drop-shadow-[0_0_10px_rgba(255_255_255_0.25)];
+  }
+
+  .active-link {
+    @apply text-emerald-200 border border-white/25 bg-white/5 drop-shadow-[0_0_10px_rgba(255_255_255_0.25)];
+  }
+
+  /* INPUT */
+  .input {
+    @apply w-full rounded-xl border border-white/20 bg-white/80 backdrop-blur-md px-4 py-3 text-slate-900 shadow-md placeholder:text-slate-400 outline-none transition-all duration-300 focus:border-emerald-400/60 focus:ring-4 focus:ring-emerald-400/20;
+  }
+
+  /* BUTTON BASE */
+  .button {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm sm:text-base font-semibold transition-all duration-300 ease-out cursor-pointer select-none focus:outline-none focus:ring-4 focus:ring-emerald-400/30 active:scale-95;
+  }
+
+  /* BUTTON PRIMARY */
+  .button-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm sm:text-base font-semibold transition-all duration-300 ease-out cursor-pointer select-none focus:outline-none focus:ring-4 focus:ring-emerald-400/30 active:scale-95 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-400/40 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* BUTTON SECONDARY */
+  .button-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm sm:text-base font-semibold transition-all duration-300 ease-out cursor-pointer select-none focus:outline-none focus:ring-4 focus:ring-emerald-400/30 active:scale-95 border border-white/20 bg-slate-900/60 backdrop-blur-md text-slate-100 shadow-md hover:bg-slate-900/80 hover:border-white/40 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* DASHBOARD CONTAINER */
+  .container-secondary {
+    @apply text-black font-bold w-[100%] md:w-[31.5%] h-[100px] bg-white rounded-4xl md:rounded-md p-4 py-6 flex items-center;
+  }
+
+  /* CONTAINER COLOR */
+  .color-primary-container {
+    @apply bg-gray-900;
+  }
+
+  /* FILES CONTAINER */
+  .file-container {
+    @apply border border-white/10 rounded-md;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  /* FILES ROW */
+  .file-row {
+    @apply flex items-center justify-between p-2 cursor-pointer border-l-2 border-transparent transition-all duration-200;
+    @apply hover:text-blue-600 hover:bg-blue-400/30 hover:border-blue-600 hover:rounded-r-[6px];
+    @apply active:text-white active:scale-[0.98] active:bg-blue-500/30 active:underline;
+  }
+
+  .file-storage-section {
+    @apply border-t border-b border-white/10 pt-4 pb-4;
+  }
+
+  /* DASHBOARD LAYOUT */
+  .dashboard-main {
+    @apply flex flex-col gap-8 md:flex-row justify-between items-start md:items-stretch;
+  }
+
+  .dashboard-left {
+    @apply w-[100%] h-auto md:w-[55%] rounded-md border border-white/10 max-h-[200vh] overflow-hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+
+  .dashboard-right {
+    @apply w-[100%] md:w-[40%] flex flex-col space-y-8;
+  }
+
+  .dashboard-right-top {
+    @apply w-full rounded-md border border-white/10;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  .dashboard-right-bottom {
+    @apply w-full rounded-md border border-white/10;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* PROGRESS BAR */
+.progress-bar {
+  width: 100%;
+  max-width: 220px;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  appearance: none;
+  -webkit-appearance: none;
+  display: block;
+}
+
+.progress-bar::-webkit-progress-bar {
+  background-color: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-bar::-webkit-progress-value {
+  background: linear-gradient(90deg, #3b82f6, #06b6d4);
+  border-radius: 999px;
+}
+
+.progress-bar::-moz-progress-bar {
+  background: linear-gradient(90deg, #3b82f6, #06b6d4);
+}

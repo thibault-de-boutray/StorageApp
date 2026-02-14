@@ -10,6 +10,8 @@ lerna-debug.log*
 # Dependencies / build
 node_modules
 **/node_modules
+dist
+dist-ssr
 front-end/dist
 front-end/dist-ssr
 
@@ -18,7 +20,7 @@ front-end/dist-ssr
 .env
 .env.*
 
-# Editor / OS
+# Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
