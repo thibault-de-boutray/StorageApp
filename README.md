@@ -1,81 +1,89 @@
 # StorageApp
 
-StorageApp is a React project designed for data storage. It provides a foundational structure for developing web applications that require data management capabilities, built with modern front-end technologies.
+Application de stockage de fichiers avec :
+- un front-end React/Vite (`front-end`)
+- un back-end Node.js/Express (`back-end`)
 
-## Installation
+## Prerequis
 
-To get a local copy up and running, follow these steps:
+- Node.js 20+ recommande
+- npm (installe avec Node.js)
 
-1.  **Clone the repository:**
-
-    ```bash
-    git clone https://github.com/thibault-de-boutray/StorageApp.git
-    ```
-
-2.  **Navigate into the project directory:**
-
-    ```bash
-    cd StorageApp
-    ```
-
-3.  **Install dependencies:**
-
-    ```bash
-    npm install
-    ```
-
-## Usage
-
-After installation, you can run the application in development mode or build it for production.
-
-### Development Server
-
-To start the development server:
+## Installation depuis GitHub
 
 ```bash
+git clone https://github.com/thibault-de-boutray/StorageApp.git
+cd StorageApp
+```
+
+Installe les dependances des 2 parties :
+
+```bash
+cd back-end
+npm install
+cd ..\front-end
+npm install
+```
+
+## Lancer l'application en local
+
+Ouvre 2 terminaux a la racine du projet.
+
+### Terminal 1 - Back-end (port 8787)
+
+```bash
+cd back-end
+node app.js
+```
+
+Le serveur API demarre sur `http://localhost:8787`.
+
+> Option developpement avec reload auto :
+>
+> ```bash
+> cd back-end
+> npm install -D nodemon
+> npm run dev
+> ```
+
+### Terminal 2 - Front-end (port 5173)
+
+```bash
+cd front-end
 npm run dev
 ```
 
-This will typically open the application in your browser at `http://localhost:5173` (or another port if 5173 is in use).
+Ouvre ensuite `http://localhost:5173`.
 
-### Building for Production
+Le front-end est deja configure pour proxy les requetes `/api` vers le back-end (`http://localhost:8787`).
 
-To build the application for production:
+## Build production (front-end)
 
 ```bash
+cd front-end
 npm run build
-```
-
-This command compiles the project into the `dist` directory, optimizing it for deployment.
-
-### Previewing the Production Build
-
-To preview the production build locally:
-
-```bash
 npm run preview
 ```
 
-This will serve the compiled application from the `dist` directory.
+## Scripts utiles
+
+### Front-end (`front-end/package.json`)
+
+- `npm run dev` : serveur de dev Vite
+- `npm run build` : build production
+- `npm run preview` : previsualiser le build
+- `npm run lint` : lint
+
+### Back-end (`back-end/package.json`)
+
+- `node app.js` : demarrer le serveur
+- `npm run dev` : demarrage avec nodemon (si installe)
 
 ## Tech Stack
 
-*   **Languages:** JavaScript
-*   **Frameworks:** React, Vite
-*   **Styling:** Tailwind CSS
-*   **Tools:** ESLint
-*   **Package Manager:** npm
-
-## Contributing
-
-Contributions are welcome! If you have suggestions for improving this project, please open an issue or submit a pull request.
+- Front-end : React, Vite, Tailwind CSS
+- Back-end : Node.js, Express, Multer
 
 ## License
 
-This project is not currently licensed.
-
-## Badges
-
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![npm](https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white)
-![License: Unspecified](https://img.shields.io/badge/License-Unspecified-lightgrey.svg)
+Projet sans licence definie pour le moment.
