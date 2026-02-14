@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
     createMyFolder,
     createUser,
+    deleteMyFile,
     downloadMyFile,
     getMyFiles,
     getMyRecentFiles,
@@ -11,6 +12,7 @@ import {
     loginUser,
     logoutUser,
     meUser,
+    renameMyFile,
     registerUser,
     shareMyFile,
     uploadUserFiles
@@ -42,13 +44,9 @@ userRoutes.post("/me/files", requireAuth, (req, res, next) => {
             next();
             return;
         }
-
-        if (err.code === "LIMIT_FILE_SIZE") {
-            res.status(413).json({ message: "fichier trop volumineux (max 100MB)" });
-            return;
-        }
-
-        res.status(400).json({ message: "upload invalide" });
+        res.status(400).json({ message: "upload impossible, reessaie" });
     });
 }, uploadUserFiles);
+userRoutes.patch("/me/files/:fileId", requireAuth, renameMyFile);
+userRoutes.delete("/me/files/:fileId", requireAuth, deleteMyFile);
 export default userRoutes;

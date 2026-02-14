@@ -28,11 +28,7 @@ const diskStorage = multer.diskStorage({
 });
 
 export const uploadFilesMiddleware = multer({
-    storage: diskStorage,
-    limits: {
-        files: 20,
-        fileSize: 100 * 1024 * 1024
-    }
-}).array("files", 20);
+    storage: diskStorage
+}).array("files");
 
 export { filesServerDir };

@@ -134,6 +134,21 @@ class UserService {
         writeUser(users);
         return user;
     }
+
+    removeUploadedUsage(id, fileCount, totalSize) {
+        const users = this.findAll();
+        const user = users.find((candidate) => candidate.id === Number(id));
+        if (!user) return null;
+
+        const currentFileCount = Number(user.nombreFichiers) || 0;
+        const currentUsedSize = Number(user.tailleUtilisee) || 0;
+
+        user.nombreFichiers = Math.max(currentFileCount - (Number(fileCount) || 0), 0);
+        user.tailleUtilisee = Math.max(currentUsedSize - (Number(totalSize) || 0), 0);
+
+        writeUser(users);
+        return user;
+    }
 }
 
 export default UserService;

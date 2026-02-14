@@ -2,7 +2,18 @@ import { useState } from "react"
 import { FileExplorerMainComponent } from "./FileExplorerComponent/FileExplorerMainComponent"
 import { FileExplorerTop } from "./FileExplorerComponent/FileExplorerTop"
 
-export const FilesExplorerComponent = ({ folder, onUploadFiles, uploadLoading, onCreateFolder, currentFolderId, path, onSelectPath, onOpenFolder }) => {
+export const FilesExplorerComponent = ({
+    folder,
+    onUploadFiles,
+    uploadLoading,
+    onCreateFolder,
+    currentFolderId,
+    path,
+    onSelectPath,
+    onOpenFolder,
+    onRenameItem,
+    onDeleteItem
+}) => {
     const [filter, setFilter] = useState("")
     return (
         <div id="file-explorer" className="color-primary-container file-container w-full max-h-[95vh] overflow-y-auto overscroll-auto scroll-smooth md:overscroll-auto">
@@ -20,6 +31,8 @@ export const FilesExplorerComponent = ({ folder, onUploadFiles, uploadLoading, o
                 path={path}
                 onSelectPath={onSelectPath}
                 onOpenFolder={onOpenFolder}
+                onRenameItem={onRenameItem}
+                onDeleteItem={onDeleteItem}
             />
 
         </div>

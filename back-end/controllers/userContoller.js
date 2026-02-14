@@ -135,44 +135,19 @@ export const logoutUser = (req, res) => {
 export const uploadUserFiles = (req, res) => {
     const files = Array.isArray(req.files) ? req.files : [];
     const uploadFolder = req.uploadUserFolder || String(req.user?.id || "anonymous");
-    const parentId = req.body?.parentId === undefined || req.body?.parentId === null || req.body?.parentId === ""
+    const rawParentId = req.body?.parentId;
+    const parentId = rawParentId === undefined || rawParentId === null || rawParentId === ""
         ? null
-        : Number(req.body.parentId);
-    const parentFolder = parentId === null ? null : fileService.getFolderByIdForOwner(req.user.id, parentId);
-
-    if (parentId !== null && !parentFolder) {
-        files.forEach((file) => {
-            if (file?.path && fs.existsSync(file.path)) {
-                fs.unlinkSync(file.path);
-            }
-        });
-        res.status(400).json({ message: "dossier parent introuvable" });
-        return;
-    }
+        : Number(rawParentId);
+    const safeParentId = Number.isFinite(parentId) ? parentId : null;
+    const parentFolder = safeParentId === null ? null : fileService.getFolderByIdForOwner(req.user.id, safeParentId);
 
     if (files.length === 0) {
-        res.status(400).json({ message: "aucun fichier recu" });
+        res.status(400).json({ message: "choisis au moins un fichier" });
         return;
     }
 
     const totalSize = files.reduce((sum, file) => sum + (Number(file.size) || 0), 0);
-    const stockage = service.getStockageById(req.user.id);
-
-    if (!stockage) {
-        res.status(404).json({ message: "aucun utilisateur trouve" });
-        return;
-    }
-
-    if (totalSize > stockage.tailleRestante) {
-        files.forEach((file) => {
-            if (file?.path && fs.existsSync(file.path)) {
-                fs.unlinkSync(file.path);
-            }
-        });
-        res.status(413).json({ message: "espace de stockage insuffisant" });
-        return;
-    }
-
     service.addUploadedUsage(req.user.id, files.length, totalSize);
     const userRootDir = getUserRootDir(req.user?.identifiant, req.user?.id);
     const targetDir = parentFolder?.storagePath || userRootDir;
@@ -188,7 +163,7 @@ export const uploadUserFiles = (req, res) => {
             fileName: file.originalname,
             storedName: file.filename,
             ownerId: req.user.id,
-            parentId: Number.isFinite(parentId) ? parentId : null,
+            parentId: safeParentId,
             sizeBytes: file.size,
             mimeType: file.mimetype,
             storagePath: targetPath,
@@ -283,22 +258,15 @@ export const getMyRecentFiles = (req, res) => {
 
 export const downloadMyFile = (req, res) => {
     const { fileId } = req.params;
-    const canAccess = fileService.canUserAccessFile(fileId, req.user.id);
-
-    if (!canAccess) {
-        res.status(403).json({ message: "acces refuse" });
-        return;
-    }
-
     const file = fileService.getFileById(fileId);
     if (!file || !file.storagePath) {
-        res.status(404).json({ message: "fichier introuvable" });
+        res.status(404).json({ message: "fichier non trouve" });
         return;
     }
 
     const absolutePath = path.resolve(file.storagePath);
     if (!fs.existsSync(absolutePath)) {
-        res.status(404).json({ message: "fichier absent du serveur" });
+        res.status(404).json({ message: "fichier non trouve sur le serveur" });
         return;
     }
 
@@ -330,6 +298,73 @@ export const shareMyFile = (req, res) => {
     res.json({
         message: "partage enregistre",
         shares: result.shares
+    });
+};
+
+export const renameMyFile = (req, res) => {
+    const { fileId } = req.params;
+    const nextName = req.body?.name;
+
+    if (!String(nextName || "").trim()) {
+        res.status(400).json({ message: "name est obligatoire" });
+        return;
+    }
+
+    const canAccess = fileService.getOwnedItemById(req.user.id, fileId);
+    if (!canAccess) {
+        res.status(404).json({ message: "fichier introuvable" });
+        return;
+    }
+
+    const result = fileService.renameOwnedItem(req.user.id, fileId, nextName);
+    if (result.error) {
+        const statusCode = result.error.includes("existe deja") ? 409 : 400;
+        res.status(statusCode).json({ message: result.error });
+        return;
+    }
+
+    res.json({
+        message: "element renomme",
+        file: mapApiFile(result.item, req.user.id)
+    });
+};
+
+export const deleteMyFile = (req, res) => {
+    const { fileId } = req.params;
+    const ownedItem = fileService.getOwnedItemById(req.user.id, fileId);
+    if (!ownedItem) {
+        res.status(404).json({ message: "fichier introuvable" });
+        return;
+    }
+
+    const result = fileService.deleteOwnedItem(req.user.id, fileId);
+    if (result.error) {
+        res.status(400).json({ message: result.error });
+        return;
+    }
+
+    const removedFolders = result.removedItems
+        .filter((item) => item.itemType === "folder" && item.storagePath)
+        .sort((a, b) => String(b.storagePath).length - String(a.storagePath).length);
+    removedFolders.forEach((folder) => {
+        if (fs.existsSync(folder.storagePath)) {
+            fs.rmSync(folder.storagePath, { recursive: true, force: true });
+        }
+    });
+
+    const removedFiles = result.removedItems.filter((item) => item.itemType === "file");
+    removedFiles.forEach((file) => {
+        if (file.storagePath && fs.existsSync(file.storagePath)) {
+            fs.unlinkSync(file.storagePath);
+        }
+    });
+
+    const removedSize = removedFiles.reduce((sum, file) => sum + (Number(file.sizeBytes) || 0), 0);
+    service.removeUploadedUsage(req.user.id, removedFiles.length, removedSize);
+
+    res.json({
+        message: "element supprime",
+        deletedIds: result.removedItems.map((item) => item.id)
     });
 };
 

@@ -4,6 +4,15 @@ import path from "node:path";
 import { cleanFolderName, defaultRootFolders, getUserRootDir } from "../utils/storagePaths.js";
 
 class FileService {
+    sanitizeFileName(fileName) {
+        const cleanName = String(fileName || "")
+            .trim()
+            .replace(/[<>:"/\\|?*\x00-\x1F]/g, "_")
+            .replace(/\s+/g, " ")
+            .slice(0, 120);
+        return cleanName || "New File";
+    }
+
     readState() {
         const state = readFilesData();
         return {
@@ -143,6 +152,16 @@ class FileService {
         return state.files.find((file) => Number(file.id) === Number(fileId)) || null;
     }
 
+    getOwnedItemById(ownerId, fileId) {
+        const numericOwnerId = Number(ownerId);
+        const numericFileId = Number(fileId);
+        const state = this.readState();
+        return state.files.find((item) => (
+            Number(item.id) === numericFileId &&
+            Number(item.ownerId) === numericOwnerId
+        )) || null;
+    }
+
     getFolderByIdForOwner(ownerId, folderId) {
         const folder = this.getFileById(folderId);
         if (!folder) return null;
@@ -211,6 +230,121 @@ class FileService {
 
         this.writeState(state);
         return { shares: createdShares, error: null };
+    }
+
+    renameOwnedItem(ownerId, fileId, nextName) {
+        const state = this.readState();
+        const numericOwnerId = Number(ownerId);
+        const numericFileId = Number(fileId);
+        const item = state.files.find((candidate) => (
+            Number(candidate.id) === numericFileId &&
+            Number(candidate.ownerId) === numericOwnerId
+        ));
+
+        if (!item) {
+            return { item: null, error: "fichier introuvable" };
+        }
+
+        const cleanName = item.itemType === "folder"
+            ? cleanFolderName(nextName)
+            : this.sanitizeFileName(nextName);
+
+        const hasConflict = state.files.some((candidate) => (
+            Number(candidate.id) !== numericFileId &&
+            Number(candidate.ownerId) === numericOwnerId &&
+            Number(candidate.parentId) === Number(item.parentId) &&
+            String(candidate.fileName || "").toLowerCase() === cleanName.toLowerCase()
+        ));
+
+        if (hasConflict) {
+            return { item: null, error: "un element avec ce nom existe deja" };
+        }
+
+        const now = new Date().toISOString();
+
+        if (item.itemType === "folder") {
+            const currentPath = String(item.storagePath || "");
+            const currentDir = path.dirname(currentPath);
+            const targetPath = path.join(currentDir, cleanName);
+
+            if (currentPath && path.resolve(currentPath) !== path.resolve(targetPath) && fs.existsSync(targetPath)) {
+                return { item: null, error: "un dossier avec ce nom existe deja" };
+            }
+
+            if (currentPath && fs.existsSync(currentPath)) {
+                fs.renameSync(currentPath, targetPath);
+            }
+
+            const resolvedOldPath = currentPath ? path.resolve(currentPath) : "";
+            const resolvedOldPrefix = resolvedOldPath ? `${resolvedOldPath}${path.sep}` : "";
+            const resolvedTargetPath = currentPath ? path.resolve(targetPath) : "";
+
+            state.files.forEach((candidate) => {
+                if (Number(candidate.ownerId) !== numericOwnerId) return;
+                const candidatePath = String(candidate.storagePath || "");
+                if (!candidatePath || !resolvedOldPath) return;
+
+                const resolvedCandidatePath = path.resolve(candidatePath);
+                const isNestedPath = resolvedCandidatePath === resolvedOldPath || resolvedCandidatePath.startsWith(resolvedOldPrefix);
+                if (!isNestedPath) return;
+
+                const relativePath = path.relative(resolvedOldPath, resolvedCandidatePath);
+                candidate.storagePath = relativePath
+                    ? path.join(resolvedTargetPath, relativePath)
+                    : resolvedTargetPath;
+                candidate.updatedAt = now;
+            });
+
+            item.storedName = cleanName;
+            item.folderName = cleanName;
+        } else {
+            item.updatedAt = now;
+        }
+
+        item.fileName = cleanName;
+        item.updatedAt = now;
+        this.writeState(state);
+        return { item, error: null };
+    }
+
+    deleteOwnedItem(ownerId, fileId) {
+        const state = this.readState();
+        const numericOwnerId = Number(ownerId);
+        const numericFileId = Number(fileId);
+        const target = state.files.find((item) => (
+            Number(item.id) === numericFileId &&
+            Number(item.ownerId) === numericOwnerId
+        ));
+
+        if (!target) {
+            return { removedItems: [], error: "fichier introuvable" };
+        }
+
+        const idsToDelete = new Set([numericFileId]);
+
+        if (target.itemType === "folder") {
+            let changed = true;
+            while (changed) {
+                changed = false;
+                state.files.forEach((item) => {
+                    if (Number(item.ownerId) !== numericOwnerId) return;
+                    if (item.parentId === null || item.parentId === undefined) return;
+
+                    const parentId = Number(item.parentId);
+                    if (!idsToDelete.has(parentId) || idsToDelete.has(Number(item.id))) return;
+
+                    idsToDelete.add(Number(item.id));
+                    changed = true;
+                });
+            }
+        }
+
+        const removedItems = state.files.filter((item) => idsToDelete.has(Number(item.id)));
+        state.files = state.files.filter((item) => !idsToDelete.has(Number(item.id)));
+        state.fileShares = state.fileShares.filter((share) => !idsToDelete.has(Number(share.fileId)));
+        this.writeState(state);
+
+        return { removedItems, error: null };
     }
 
     ensureUserWorkspace(user) {

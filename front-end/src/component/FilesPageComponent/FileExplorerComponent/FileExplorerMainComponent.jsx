@@ -1,13 +1,22 @@
 import { useEffect, useState } from "react"
-import { FaAngleDown, FaAngleUp, FaFolder } from "react-icons/fa6"
+import { FaAngleDown, FaAngleUp, FaEllipsisVertical, FaFolder } from "react-icons/fa6"
 import { FileIcon } from "react-file-icon"
 import { FileSortSelect } from "./FileSortSelect"
 import { getFileExtension, getFileIconStyle, getFileTypeLabel, getLastModif } from "../../../utils/fileUtils"
 import { FilePathContainer } from "./FilePathContainer"
 
-export const FileExplorerMainComponent = ({ filteredFolder = [], filter = "", path = [], onSelectPath, onOpenFolder }) => {
+export const FileExplorerMainComponent = ({
+    filteredFolder = [],
+    filter = "",
+    path = [],
+    onSelectPath,
+    onOpenFolder,
+    onRenameItem,
+    onDeleteItem
+}) => {
     const [sortBy, setSortBy] = useState("lastModif")
     const [sortDir, setSortDir] = useState("desc")
+    const [openedActionsId, setOpenedActionsId] = useState(null)
     const FolderList = filteredFolder.map((item) =>
         typeof item === "string" ? { name: item } : item
     )
@@ -61,6 +70,27 @@ export const FileExplorerMainComponent = ({ filteredFolder = [], filter = "", pa
             container.scrollTo({ top: 0, behavior: "smooth" })
         }
     }, [filter, sortBy, sortDir])
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (!openedActionsId) return
+            if (event.target.closest?.("[data-file-actions]")) return
+            setOpenedActionsId(null)
+        }
+
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => document.removeEventListener("mousedown", handleClickOutside)
+    }, [openedActionsId])
+
+    const handleRenameClick = async (file) => {
+        setOpenedActionsId(null)
+        await onRenameItem?.(file)
+    }
+
+    const handleDeleteClick = async (file) => {
+        setOpenedActionsId(null)
+        await onDeleteItem?.(file)
+    }
 
     return (
         <div>
@@ -122,7 +152,7 @@ export const FileExplorerMainComponent = ({ filteredFolder = [], filter = "", pa
                                             <button
                                                 type="button"
                                                 onClick={() => onOpenFolder?.(file)}
-                                                className="truncate text-xs text-left text-blue-200 hover:text-blue-100 md:text-sm"
+                                                className="truncate cursor-pointer text-xs text-left text-blue-200 hover:text-blue-100 md:text-sm"
                                             >
                                                 {file.name}
                                             </button>
@@ -151,17 +181,43 @@ export const FileExplorerMainComponent = ({ filteredFolder = [], filter = "", pa
                                         {file?.type === "folder" || file?.isFolder ? "FOLDER" : getFileTypeLabel(file.name)}
                                     </span>
                                 </td>
-                                <td className="px-2 py-2 flex items-center justify-center md:px-4 md:py-3">
-                                    {file.downloadUrl ? (
-                                        <a
-                                            href={file.downloadUrl}
-                                            className="inline-flex rounded-lg border border-emerald-300/40 px-3 py-1 text-xs font-semibold text-emerald-200 transition hover:border-emerald-200 hover:text-emerald-100"
+                                <td className="px-2 py-2 md:px-4 md:py-3">
+                                    <div data-file-actions className="relative flex items-center justify-center">
+                                        <button
+                                            type="button"
+                                            onClick={() => setOpenedActionsId((current) => current === file.id ? null : file.id)}
+                                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-white/80 transition hover:border-white/30 hover:bg-white/10"
+                                            aria-label={`Actions for ${file.name}`}
                                         >
-                                            Download
-                                        </a>
-                                    ) : (
-                                        <span className="text-xs text-white/40">--</span>
-                                    )}
+                                            <FaEllipsisVertical />
+                                        </button>
+                                        {openedActionsId === file.id ? (
+                                            <div className="absolute right-0 top-full z-30 mt-2 w-40 rounded-xl border border-white/15 bg-slate-900/95 p-1 shadow-xl backdrop-blur">
+                                                {!file?.isFolder && file.downloadUrl ? (
+                                                    <a
+                                                        href={file.downloadUrl}
+                                                        className="block w-full rounded-lg px-3 py-2 text-left text-xs text-emerald-200 transition hover:bg-white/10"
+                                                    >
+                                                        Download
+                                                    </a>
+                                                ) : null}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRenameClick(file)}
+                                                    className="block w-full rounded-lg px-3 py-2 text-left text-xs text-white/85 transition hover:bg-white/10"
+                                                >
+                                                    Renommer
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleDeleteClick(file)}
+                                                    className="block w-full rounded-lg px-3 py-2 text-left text-xs text-rose-300 transition hover:bg-rose-500/20"
+                                                >
+                                                    Supprimer
+                                                </button>
+                                            </div>
+                                        ) : null}
+                                    </div>
                                 </td>
                             </tr>
                         ))

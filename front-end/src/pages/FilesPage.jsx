@@ -80,20 +80,25 @@ export const FilesPage = () => {
         }
     }, [request, user?.id])
 
-    const loadFolder = useCallback(async (folderId) => {
+    const fetchFolder = useCallback(async (folderId) => {
         const parentValue = folderId === null ? "null" : String(folderId)
         const payload = await request({ method: "GET", url: `/api/users/me/files?parentId=${parentValue}` })
         const items = Array.isArray(payload?.files) ? payload.files : []
-        setCurrentItems(items)
         return items
     }, [request])
 
+    const loadFolder = useCallback(async (folderId) => {
+        const items = await fetchFolder(folderId)
+        setCurrentItems(items)
+        return items
+    }, [fetchFolder])
+
     const loadRootFolders = useCallback(async () => {
-        const rootItems = await loadFolder(null)
+        const rootItems = await fetchFolder(null)
         const folders = rootItems.filter((item) => item.itemType === "folder")
         setRootFolders(folders)
         return folders
-    }, [loadFolder])
+    }, [fetchFolder])
 
     const initialLoad = useCallback(async () => {
         if (!user?.id) return
@@ -205,6 +210,45 @@ export const FilesPage = () => {
         }
     }
 
+    const handleRenameItem = async (item) => {
+        const currentName = String(item?.name || "").trim()
+        const nextName = window.prompt("Nouveau nom", currentName)
+        if (!nextName) return
+        if (nextName.trim() === currentName) return
+
+        try {
+            await request({
+                method: "PATCH",
+                url: `/api/users/me/files/${item.id}`,
+                data: { name: nextName }
+            })
+            await refreshCountsAndStorage()
+            await loadRootFolders()
+            await loadFolder(currentFolderId ?? null)
+            setError("")
+        } catch (err) {
+            setError(getRequestErrorMessage(err))
+        }
+    }
+
+    const handleDeleteItem = async (item) => {
+        const shouldDelete = window.confirm(`Supprimer "${item?.name || "cet element"}" ?`)
+        if (!shouldDelete) return
+
+        try {
+            await request({
+                method: "DELETE",
+                url: `/api/users/me/files/${item.id}`
+            })
+            await refreshCountsAndStorage()
+            await loadRootFolders()
+            await loadFolder(currentFolderId ?? null)
+            setError("")
+        } catch (err) {
+            setError(getRequestErrorMessage(err))
+        }
+    }
+
     const folder = useMemo(() => ({
         name: path.length > 0 ? path[path.length - 1].name : "My files",
         listeChild: currentItems.map((item) => ({
@@ -240,6 +284,8 @@ export const FilesPage = () => {
                     path={path}
                     onSelectPath={handleSelectPath}
                     onOpenFolder={handleOpenFolder}
+                    onRenameItem={handleRenameItem}
+                    onDeleteItem={handleDeleteItem}
                 />
             </div>
         </div>
