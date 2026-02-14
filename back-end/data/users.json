@@ -1,0 +1,44 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "identifiant": "john_doe",
+      "email": "john@example.com",
+      "passWord": "123456"
+    },
+    {
+      "id": 2,
+      "identifiant": "jane_smith",
+      "email": "jane@example.com",
+      "passWord": "123456"
+    },
+    {
+      "id": 3,
+      "identifiant": "alice_johnson",
+      "email": "alice@example.com",
+      "passWord": "123456"
+    },
+    {
+      "id": 4,
+      "identifiant": "thibault_test",
+      "email": "thibault_test@example.com",
+      "passWord": "abcdef"
+    },
+    {
+      "id": 5,
+      "identifiant": "thibault",
+      "email": "thibdeb1112@gmail.com",
+      "passWord": "%Mt445571"
+    },
+    {
+      "id": 6,
+      "identifiant": "thibault1112",
+      "email": "thibaultdeb1112@gmail.com",
+      "passWord": "%Mt445571",
+      "langue": "fr-FR",
+      "stockage": 107374182400,
+      "nombreFichiers": 5,
+      "tailleUtilisee": 1692106
+    }
+  ]
+}
